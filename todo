@@ -1,0 +1,11 @@
+
+
+    Network
+        HTTP
+            Token management
+            Dynamic route
+            Database management
+                Mysql / NoSQL ? How ?
+            Handler
+            Pre processor
+            Post processor
