@@ -1,15 +1,17 @@
 package org.barbatus.network.http.entity;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.barbatus.common.StringPair;
 import org.barbatus.console.Console;
 import org.barbatus.network.http.processor.BarbatusHttpProcessor;
+import org.barbatus.utils.URLUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.util.Map;
+import java.util.List;
 
 public class BarbatusHttpRequest {
 
@@ -37,8 +39,8 @@ public class BarbatusHttpRequest {
         return exchange.getRequestMethod();
     }
 
-    public Map<String, String> getQuery() {
-        return null; //TODO : query
+    public List<StringPair> getQuery() {
+        return URLUtils.parseQuery(exchange.getRequestURI().getRawQuery());
     }
 
     public Object getBody() {

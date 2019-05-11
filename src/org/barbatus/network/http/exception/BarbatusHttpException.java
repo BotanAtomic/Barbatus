@@ -2,8 +2,12 @@ package org.barbatus.network.http.exception;
 
 public class BarbatusHttpException extends Exception {
 
-    protected BarbatusHttpException(Throwable error) {
-        super(error);
+    public BarbatusHttpException(String message) {
+        super(message);
+    }
+
+    public BarbatusHttpException(Exception exception) {
+        super(exception);
     }
 
 }

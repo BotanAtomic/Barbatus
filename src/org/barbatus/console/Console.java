@@ -45,11 +45,11 @@ public class Console {
     }
 
     public static void error(String message) {
-        warn("BARBATUS", message);
+        error("BARBATUS", message);
     }
 
     public static void error(Exception exception) {
-        warn("BARBATUS", ExceptionUtils.getStackTrace(exception));
+        error("BARBATUS", ExceptionUtils.getStackTrace(exception));
     }
 
     public static void error(String tag, Exception exception) {
@@ -59,7 +59,8 @@ public class Console {
     private static void out(ConsoleLevel level, String tag, String message) {
         if (Barbatus.getConsoleLevel().ordinal() <= level.ordinal()) {
             try {
-                Barbatus.getOutputStream().write(Barbatus.getConsoleFormatter().format(level, tag, message).getBytes());
+                (level == ConsoleLevel.ERROR ? System.err : Barbatus.getOutputStream())
+                        .write(Barbatus.getConsoleFormatter().format(level, tag, message).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
