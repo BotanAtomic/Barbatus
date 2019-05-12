@@ -2,13 +2,14 @@ package network.http.handler.processor;
 
 import network.http.DefaultTransporter;
 import org.barbatus.common.transformer.Transformer;
-import org.barbatus.network.http.handler.BarbatusHttpHandler;
+import org.barbatus.network.http.entity.BarbatusHttpRequest;
 
-public class DataPreProcessor implements Transformer<BarbatusHttpHandler, DefaultTransporter> {
+public class DataPreProcessor implements Transformer<BarbatusHttpRequest, DefaultTransporter> {
 
     @Override
-    public DefaultTransporter transform(BarbatusHttpHandler input) {
-        return null;
+    public DefaultTransporter transform(BarbatusHttpRequest request) {
+        return new DefaultTransporter(request.getQuery(), request.getMethod(),
+                request.getProtocol(), request.getStringBody());
     }
 
 }

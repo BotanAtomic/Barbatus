@@ -86,11 +86,13 @@ public class BarbatusHttpServer {
                 Transformer<Object, byte[]> postProcessor = null;
 
                 for (Field variable : variables) {
+                    variable.setAccessible(true);
                     if (variable.isAnnotationPresent(PreProcessor.class)) {
                         preProcessor = (Transformer<BarbatusHttpRequest, ?>) variable.get(httpHandler);
-                    } else if (variable.isAnnotationPresent(PostProcessor.class)) {
+                    } else if(variable.isAnnotationPresent(PostProcessor.class)) {
                         postProcessor = (Transformer<Object, byte[]>) variable.get(httpHandler);
                     }
+                    variable.setAccessible(false);
                 }
 
                 for (Field variable : superClassVariables) {
@@ -99,7 +101,7 @@ public class BarbatusHttpServer {
                         variable.set(httpHandler, this);
                     } else if (variable.isAnnotationPresent(PreProcessor.class)) {
                         variable.set(httpHandler, preProcessor);
-                    } else if (variable.isAnnotationPresent(PostProcessor.class)) {
+                    } else if(variable.isAnnotationPresent(PostProcessor.class)) {
                         variable.set(httpHandler, postProcessor);
                     }
                     variable.setAccessible(false);

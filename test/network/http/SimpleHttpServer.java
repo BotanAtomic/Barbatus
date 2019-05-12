@@ -1,10 +1,11 @@
 package network.http;
 
-import network.http.handler.JsonExample;
 import network.http.handler.HtmlExample;
+import network.http.handler.JsonExample;
+import network.http.handler.ProcessorExample;
 import org.barbatus.console.Console;
-import org.barbatus.core.Barbatus;
 import org.barbatus.console.enums.ConsoleLevel;
+import org.barbatus.core.Barbatus;
 import org.barbatus.network.http.BarbatusHttpServer;
 
 import java.net.InetAddress;
@@ -22,7 +23,7 @@ public class SimpleHttpServer {
                 .setAddress(new InetSocketAddress(InetAddress.getLoopbackAddress(), 8080))
                 .enableCors(true)
                 .setTimeout(3000)
-                .setHandlers(JsonExample.class, HtmlExample.class);
+                .setHandlers(JsonExample.class, HtmlExample.class, ProcessorExample.class);
 
         server.start();
     }

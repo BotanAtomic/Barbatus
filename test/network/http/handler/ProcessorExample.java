@@ -15,14 +15,14 @@ import org.barbatus.network.http.handler.BarbatusHttpHandler;
 public class ProcessorExample extends BarbatusHttpHandler {
 
     @PreProcessor
-    private Transformer<BarbatusHttpHandler, DefaultTransporter> preProcessor = new DataPreProcessor();
+    private Transformer preProcessor = new DataPreProcessor();
 
     @PostProcessor
-    private Transformer<DefaultTransporter, byte[]> postProcessor = new DataPostProcessor();
+    private Transformer postProcessor = new DataPostProcessor();
 
     @Override
     public void handle(BarbatusHttpRequest request, BarbatusHttpResponse response) throws Exception {
-        response.sendString("<html><b>Hello</b></html>");
+        response.send(request.getBody());
     }
 
 }
