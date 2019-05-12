@@ -1,4 +1,4 @@
-package org.barbatus.enums;
+package org.barbatus.console.enums;
 
 public enum ConsoleLevel {
     TRACE,

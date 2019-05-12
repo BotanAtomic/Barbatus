@@ -1,6 +1,6 @@
 package org.barbatus.console;
 
-import org.barbatus.enums.ConsoleLevel;
+import org.barbatus.console.enums.ConsoleLevel;
 
 public interface ConsoleFormatter {
 

@@ -1,6 +1,6 @@
 package org.barbatus.utils;
 
-import org.barbatus.common.StringPair;
+import org.barbatus.common.pair.StringPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class URLUtils {
 
     public static List<StringPair> parseQuery(String raw) {
         if (raw == null || raw.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         final List<StringPair> data = new ArrayList<>();

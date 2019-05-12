@@ -2,6 +2,9 @@ package org.barbatus.network.http.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.barbatus.annotations.PostProcessor;
+import org.barbatus.annotations.PreProcessor;
+import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
 import org.barbatus.network.http.BarbatusHttpServer;
 import org.barbatus.network.http.annotations.HttpServer;
@@ -13,11 +16,20 @@ public abstract class BarbatusHttpHandler implements HttpHandler {
     @HttpServer
     protected BarbatusHttpServer server;
 
+    protected HttpExchange root;
+
+    @PreProcessor()
+    private Transformer<BarbatusHttpRequest, ?> preProcessor;
+
+    @PostProcessor
+    private Transformer<Object, byte[]> postProcessor;
+
     @Override
     public void handle(HttpExchange exchange) {
         try {
-            BarbatusHttpRequest request = new BarbatusHttpRequest(exchange, server.getPreProcessor());
-            BarbatusHttpResponse response = new BarbatusHttpResponse();
+            this.root = exchange;
+            BarbatusHttpRequest request = new BarbatusHttpRequest(exchange, preProcessor);
+            BarbatusHttpResponse response = new BarbatusHttpResponse(exchange, postProcessor);
             handle(request, response);
         } catch (Exception e) {
             Console.error(e);
