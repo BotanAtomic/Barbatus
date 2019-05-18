@@ -143,6 +143,19 @@ public class BarbatusHttpResponse {
         }
     }
 
+    public void sendStatus(HttpStatus status) {
+        sendStatus(status.code());
+    }
+
+    public void sendStatus(int code) {
+        try {
+            exchange.sendResponseHeaders(code, 0);
+            getStream().close();
+        } catch (IOException e) {
+            Console.error(getClass().getSimpleName(), e);
+        }
+    }
+
 
     public OutputStream getStream() {
         return exchange.getResponseBody();

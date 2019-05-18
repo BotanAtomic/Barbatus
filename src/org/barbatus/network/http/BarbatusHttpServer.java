@@ -1,8 +1,8 @@
 package org.barbatus.network.http;
 
 import com.sun.net.httpserver.HttpServer;
-import org.barbatus.annotations.PostProcessor;
-import org.barbatus.annotations.PreProcessor;
+import org.barbatus.annotations.InputProcessor;
+import org.barbatus.annotations.OutputProcessor;
 import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
 import org.barbatus.network.http.annotations.BarbatusRoute;
@@ -30,6 +30,7 @@ public class BarbatusHttpServer {
 
     private HttpServer root;
 
+
     private BarbatusHttpServer() {
 
     }
@@ -37,6 +38,7 @@ public class BarbatusHttpServer {
     public static BarbatusHttpServer newInstance() {
         return new BarbatusHttpServer();
     }
+
 
     public InetSocketAddress getAddress() {
         return address;
@@ -82,15 +84,15 @@ public class BarbatusHttpServer {
                 Field[] superClassVariables = handler.getSuperclass().getDeclaredFields();
                 Field[] variables = handler.getDeclaredFields();
 
-                Transformer<BarbatusHttpRequest, ?> preProcessor = null;
-                Transformer<Object, byte[]> postProcessor = null;
+                Transformer<BarbatusHttpRequest, ?> inputProcessor = null;
+                Transformer<Object, byte[]> outputProcessor = null;
 
                 for (Field variable : variables) {
                     variable.setAccessible(true);
-                    if (variable.isAnnotationPresent(PreProcessor.class)) {
-                        preProcessor = (Transformer<BarbatusHttpRequest, ?>) variable.get(httpHandler);
-                    } else if(variable.isAnnotationPresent(PostProcessor.class)) {
-                        postProcessor = (Transformer<Object, byte[]>) variable.get(httpHandler);
+                    if (variable.isAnnotationPresent(InputProcessor.class)) {
+                        inputProcessor = (Transformer<BarbatusHttpRequest, ?>) variable.get(httpHandler);
+                    } else if (variable.isAnnotationPresent(OutputProcessor.class)) {
+                        outputProcessor = (Transformer<Object, byte[]>) variable.get(httpHandler);
                     }
                     variable.setAccessible(false);
                 }
@@ -99,10 +101,10 @@ public class BarbatusHttpServer {
                     variable.setAccessible(true);
                     if (variable.isAnnotationPresent(org.barbatus.network.http.annotations.HttpServer.class)) {
                         variable.set(httpHandler, this);
-                    } else if (variable.isAnnotationPresent(PreProcessor.class)) {
-                        variable.set(httpHandler, preProcessor);
-                    } else if(variable.isAnnotationPresent(PostProcessor.class)) {
-                        variable.set(httpHandler, postProcessor);
+                    } else if (variable.isAnnotationPresent(InputProcessor.class)) {
+                        variable.set(httpHandler, inputProcessor);
+                    } else if (variable.isAnnotationPresent(OutputProcessor.class)) {
+                        variable.set(httpHandler, outputProcessor);
                     }
                     variable.setAccessible(false);
                 }
@@ -124,6 +126,7 @@ public class BarbatusHttpServer {
 
         for (BarbatusHttpHandler handler : this.handlers) {
             BarbatusRoute parameters = handler.getClass().getAnnotation(BarbatusRoute.class);
+
             root.createContext(parameters.value(), handler);
 
             Console.debug(getClass().getSimpleName(),
