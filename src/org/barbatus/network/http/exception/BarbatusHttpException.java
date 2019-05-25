@@ -1,6 +1,8 @@
 package org.barbatus.network.http.exception;
 
-public class BarbatusHttpException extends Exception {
+import org.barbatus.exception.BarbatusException;
+
+public class BarbatusHttpException extends BarbatusException {
 
     public BarbatusHttpException(String message) {
         super(message);

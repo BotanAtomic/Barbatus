@@ -124,11 +124,11 @@ public class BarbatusHttpResponse {
 
 
     public void sendHeaders(HttpStatus status) {
-        sendHeaders(status.code(), 0);
+        sendHeaders(status.code(), -1);
     }
 
     public void sendHeaders(int code) {
-        sendHeaders(code, 0);
+        sendHeaders(code, -1);
     }
 
     public void sendHeaders(HttpStatus status, int responseLength) {
@@ -149,7 +149,7 @@ public class BarbatusHttpResponse {
 
     public void sendStatus(int code) {
         try {
-            exchange.sendResponseHeaders(code, 0);
+            exchange.sendResponseHeaders(code, -1);
             getStream().close();
         } catch (IOException e) {
             Console.error(getClass().getSimpleName(), e);

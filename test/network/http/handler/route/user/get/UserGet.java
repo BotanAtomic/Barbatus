@@ -1,6 +1,6 @@
 package network.http.handler.route.user.get;
 
-import org.barbatus.network.http.annotations.BarbatusRoute;
+import org.barbatus.network.http.annotation.BarbatusRoute;
 import org.barbatus.network.http.entity.BarbatusHttpRequest;
 import org.barbatus.network.http.entity.BarbatusHttpResponse;
 import org.barbatus.network.http.handler.BarbatusHttpHandler;

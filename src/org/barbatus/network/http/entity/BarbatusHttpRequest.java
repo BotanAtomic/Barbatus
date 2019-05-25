@@ -1,5 +1,6 @@
 package org.barbatus.network.http.entity;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.barbatus.common.pair.StringPair;
 import org.barbatus.common.transformer.Transformer;
@@ -74,7 +75,13 @@ public class BarbatusHttpRequest {
 
     public byte[] getBinaryBody() {
         try {
-            byte[] data = new byte[exchange.getRequestBody().available()];
+            int availableBytes = exchange.getRequestBody().available();
+
+            if(availableBytes == 0) {
+                return new byte[0];
+            }
+
+            byte[] data = new byte[availableBytes];
             if (exchange.getRequestBody().read(data) > 0)
                 return data;
             else throw new IOException("Failed to read input stream");
@@ -82,6 +89,22 @@ public class BarbatusHttpRequest {
             Console.error(e);
             return new byte[0];
         }
+    }
+
+    public Headers getHeaders() {
+        return exchange.getRequestHeaders();
+    }
+
+    public void addHeader(String key, String value) {
+        getHeaders().add(key, value);
+    }
+
+    public void resetHeader() {
+        getHeaders().clear();
+    }
+
+    public boolean isHeaderPresent(String key) {
+        return getHeaders().containsKey(key);
     }
 
 }
