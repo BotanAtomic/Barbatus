@@ -58,11 +58,19 @@ public class BarbatusHttpRequest {
     }
 
     public JSONObject getJsonObjectBody() {
-        return new JSONObject(getStringBody());
+        try {
+            return new JSONObject(getStringBody());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public JSONArray getJsonArrayBody() {
-        return new JSONArray(getStringBody());
+        try {
+            return new JSONArray(getStringBody());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getStringBody() {
@@ -77,7 +85,7 @@ public class BarbatusHttpRequest {
         try {
             int availableBytes = exchange.getRequestBody().available();
 
-            if(availableBytes == 0) {
+            if (availableBytes == 0) {
                 return new byte[0];
             }
 

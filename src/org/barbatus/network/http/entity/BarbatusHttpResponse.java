@@ -8,9 +8,11 @@ import org.barbatus.network.http.enums.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 public class BarbatusHttpResponse {
 
@@ -23,31 +25,52 @@ public class BarbatusHttpResponse {
     }
 
     public void sendJsonArray(JSONArray json) {
-        sendJsonArray(json, 200);
+        sendJsonArray(json, HttpStatus.OK);
     }
 
     public void sendJsonArray(JSONArray json, HttpStatus status) {
-        sendString(json.toString(), Charset.defaultCharset(), status.code());
+        sendJsonArray(json, status.code());
     }
 
     public void sendJsonArray(JSONArray json, int code) {
+        addHeader("Content-Type", "application/json");
         sendString(json.toString(), Charset.defaultCharset(), code);
     }
 
     public void sendJsonObject(JSONObject json) {
-        sendJsonObject(json, 200);
+        sendJsonObject(json, HttpStatus.OK);
     }
 
     public void sendJsonObject(JSONObject json, HttpStatus status) {
-        sendString(json.toString(), Charset.defaultCharset(), status.code());
+        sendJsonObject(json, status.code());
     }
 
     public void sendJsonObject(JSONObject json, int code) {
+        addHeader("Content-Type", "application/json");
         sendString(json.toString(), Charset.defaultCharset(), code);
     }
 
+    public void sendFile(File file) {
+        sendFile(file, HttpStatus.OK);
+    }
+
+    public void sendFile(File file, HttpStatus status) {
+        sendFile(file, status.code());
+    }
+
+    public void sendFile(File file, int code) {
+        if(file == null || !file.exists())
+            return;
+
+        try {
+            sendString(new String(Files.readAllBytes(file.toPath())), code);
+        } catch (IOException e) {
+            Console.error(getClass().getSimpleName(), e);
+        }
+    }
+
     public void sendString(String s) {
-        sendString(s, Charset.defaultCharset(), 200);
+        sendString(s, Charset.defaultCharset(), HttpStatus.OK);
     }
 
     public void sendString(String s, HttpStatus status) {
@@ -59,7 +82,7 @@ public class BarbatusHttpResponse {
     }
 
     public void sendString(String s, Charset charset) {
-        sendString(s, charset, 200);
+        sendString(s, charset, HttpStatus.OK);
     }
 
     public void sendString(String s, Charset charset, HttpStatus status) {
@@ -87,7 +110,7 @@ public class BarbatusHttpResponse {
     }
 
     public void send(Object object) {
-        send(object, 200);
+        send(object, HttpStatus.OK);
     }
 
     public void send(Object object, HttpStatus status) {

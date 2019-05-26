@@ -25,10 +25,10 @@ import java.util.concurrent.Executor;
 
 public class BarbatusHttpServer {
 
-    private InetSocketAddress address = new InetSocketAddress(InetAddress.getLoopbackAddress(), 80);
+    private InetSocketAddress address;
 
-    private int backlog = 0;
-    private boolean enableCors = false;
+    private int backlog;
+    private boolean enableCors;
     private Executor executor;
 
     private List<BarbatusHttpHandler> handlers;
@@ -39,15 +39,11 @@ public class BarbatusHttpServer {
 
     private Map<String, Object> dependencies = new HashMap<>();
 
-
-    private BarbatusHttpServer() {
-
+    public BarbatusHttpServer() {
+        this.address = new InetSocketAddress(InetAddress.getLoopbackAddress(), 80);
+        this.enableCors = false;
+        this.backlog = 0;
     }
-
-    public static BarbatusHttpServer newInstance() {
-        return new BarbatusHttpServer();
-    }
-
 
     public InetSocketAddress getAddress() {
         return address;
@@ -170,6 +166,9 @@ public class BarbatusHttpServer {
     }
 
     public BarbatusHttpServer inject(Object object) throws BarbatusException {
+        if(this.handlers != null)
+            throw new BarbatusException("Can not inject dependencies after configuring handlers");
+
         for (Object instance : dependencies.values())
             if (instance.getClass().equals(object.getClass()))
                 throw new BarbatusException("Can not inject the same class twice without name");
@@ -202,6 +201,8 @@ public class BarbatusHttpServer {
                                 handler.getClass().getSimpleName(), BarbatusRoute.class.getName()));
             }
         }
+
+        this.handlers.clear();
 
         root.start();
         Console.info(getClass().getSimpleName(), String.format("Server successfully bound on [%s]", this.address.toString()));
