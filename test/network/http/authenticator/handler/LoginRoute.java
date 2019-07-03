@@ -16,9 +16,6 @@ public class LoginRoute extends BarbatusHttpHandler {
 
     @Override
     public void handle(BarbatusHttpRequest request, BarbatusHttpResponse response) throws Exception {
-        //your logic login here
-        //generate new token
-
         response.sendString(tokenManager.generateToken((short) 10), HttpStatus.OK);
     }
 

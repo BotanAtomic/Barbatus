@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.barbatus.annotation.InputProcessor;
 import org.barbatus.annotation.OutputProcessor;
-import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
 import org.barbatus.injector.annotation.Inject;
 import org.barbatus.network.http.BarbatusHttpServer;
@@ -15,6 +14,8 @@ import org.barbatus.network.http.entity.BarbatusHttpResponse;
 import org.barbatus.network.http.enums.HttpMethod;
 import org.barbatus.network.http.enums.HttpStatus;
 import org.barbatus.network.http.filter.Filter;
+import org.barbatus.network.http.transformer.HttpInputTransformer;
+import org.barbatus.network.http.transformer.HttpOutputTransformer;
 
 public abstract class BarbatusHttpHandler implements HttpHandler, Filter {
 
@@ -24,10 +25,10 @@ public abstract class BarbatusHttpHandler implements HttpHandler, Filter {
     private HttpExchange root;
 
     @InputProcessor
-    private Transformer<BarbatusHttpRequest, ?> inputProcessor;
+    private HttpInputTransformer<?> inputProcessor;
 
     @OutputProcessor
-    private Transformer<Object, byte[]> outputProcessor;
+    private HttpOutputTransformer<Object> outputProcessor;
 
     @Inject
     private boolean secure;
@@ -48,11 +49,12 @@ public abstract class BarbatusHttpHandler implements HttpHandler, Filter {
                 headers.add("Access-Control-Allow-Origin", "*");
             }
 
-            if (secure && server.getAuthenticator() != null
-                    && !server.getAuthenticator().authenticate(request, response))
+            if (secure && server.getAuthenticator() != null && !server.getAuthenticator().authenticate(request, response)) {
+                response.sendStatus(HttpStatus.UNAUTHORIZED);
                 return;
+            }
 
-            if(method != HttpMethod.ANY && !method.is(request.getMethod())) {
+            if (method != HttpMethod.ANY && !method.is(request.getMethod())) {
                 response.sendStatus(HttpStatus.NOT_FOUND);
                 return;
             }

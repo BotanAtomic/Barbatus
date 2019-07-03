@@ -1,9 +1,9 @@
 package network.http.custom.processor;
 
-import org.barbatus.common.transformer.Transformer;
 import org.barbatus.network.http.entity.BarbatusHttpRequest;
+import org.barbatus.network.http.transformer.HttpInputTransformer;
 
-public class InputDataProcessor implements Transformer<BarbatusHttpRequest, CustomObject> {
+public class InputDataProcessor implements HttpInputTransformer<CustomObject> {
 
     @Override
     public CustomObject transform(BarbatusHttpRequest input) {

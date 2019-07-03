@@ -3,8 +3,8 @@ package org.barbatus.network.http.entity;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.barbatus.common.pair.StringPair;
-import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
+import org.barbatus.network.http.transformer.HttpInputTransformer;
 import org.barbatus.utils.URLUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,9 +17,9 @@ import java.util.List;
 public class BarbatusHttpRequest {
 
     private final HttpExchange exchange;
-    private final Transformer<BarbatusHttpRequest, ?> processor;
+    private final HttpInputTransformer<?> processor;
 
-    public BarbatusHttpRequest(HttpExchange exchange, Transformer<BarbatusHttpRequest, ?> processor) {
+    public BarbatusHttpRequest(HttpExchange exchange, HttpInputTransformer<?> processor) {
         this.exchange = exchange;
         this.processor = processor;
     }

@@ -2,9 +2,9 @@ package org.barbatus.network.http.entity;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
 import org.barbatus.network.http.enums.HttpStatus;
+import org.barbatus.network.http.transformer.HttpOutputTransformer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,9 +17,9 @@ import java.nio.file.Files;
 public class BarbatusHttpResponse {
 
     private final HttpExchange exchange;
-    private final Transformer<Object, byte[]> processor;
+    private final HttpOutputTransformer<Object> processor;
 
-    public BarbatusHttpResponse(HttpExchange exchange, Transformer<Object, byte[]> processor) {
+    public BarbatusHttpResponse(HttpExchange exchange, HttpOutputTransformer<Object> processor) {
         this.exchange = exchange;
         this.processor = processor;
     }
@@ -59,7 +59,7 @@ public class BarbatusHttpResponse {
     }
 
     public void sendFile(File file, int code) {
-        if(file == null || !file.exists())
+        if (file == null || !file.exists())
             return;
 
         try {

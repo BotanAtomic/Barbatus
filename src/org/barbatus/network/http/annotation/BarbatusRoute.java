@@ -13,6 +13,8 @@ public @interface BarbatusRoute {
 
     String value() default "/";
 
+    String[] parameters() default {""};
+
     boolean secure() default false;
 
     HttpMethod method() default HttpMethod.ANY;

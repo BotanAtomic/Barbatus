@@ -1,8 +1,8 @@
 package network.http.custom.processor;
 
-import org.barbatus.common.transformer.Transformer;
+import org.barbatus.network.http.transformer.HttpOutputTransformer;
 
-public class OutputDataProcessor implements Transformer<CustomObject, byte[]> {
+public class OutputDataProcessor implements HttpOutputTransformer<CustomObject> {
 
     @Override
     public byte[] transform(CustomObject input) {

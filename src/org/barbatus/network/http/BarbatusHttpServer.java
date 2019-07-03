@@ -3,15 +3,15 @@ package org.barbatus.network.http;
 import com.sun.net.httpserver.HttpServer;
 import org.barbatus.annotation.InputProcessor;
 import org.barbatus.annotation.OutputProcessor;
-import org.barbatus.common.transformer.Transformer;
 import org.barbatus.console.Console;
 import org.barbatus.exception.BarbatusException;
 import org.barbatus.injector.annotation.Inject;
 import org.barbatus.network.http.annotation.BarbatusRoute;
 import org.barbatus.network.http.authenticator.BarbatusAuthenticator;
-import org.barbatus.network.http.entity.BarbatusHttpRequest;
 import org.barbatus.network.http.exception.BarbatusHttpException;
 import org.barbatus.network.http.handler.BarbatusHttpHandler;
+import org.barbatus.network.http.transformer.HttpInputTransformer;
+import org.barbatus.network.http.transformer.HttpOutputTransformer;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -101,15 +101,15 @@ public class BarbatusHttpServer {
                 Field[] superClassVariables = handler.getSuperclass().getDeclaredFields();
                 Field[] variables = handler.getDeclaredFields();
 
-                Transformer<BarbatusHttpRequest, ?> inputProcessor = null;
-                Transformer<Object, byte[]> outputProcessor = null;
+                HttpInputTransformer<?> inputProcessor = null;
+                HttpOutputTransformer<Object> outputProcessor = null;
 
                 for (Field variable : variables) {
                     variable.setAccessible(true);
                     if (variable.isAnnotationPresent(InputProcessor.class)) {
-                        inputProcessor = (Transformer<BarbatusHttpRequest, ?>) variable.get(httpHandler);
+                        inputProcessor = (HttpInputTransformer<?>) variable.get(httpHandler);
                     } else if (variable.isAnnotationPresent(OutputProcessor.class)) {
-                        outputProcessor = (Transformer<Object, byte[]>) variable.get(httpHandler);
+                        outputProcessor = (HttpOutputTransformer<Object>) variable.get(httpHandler);
                     } else if (variable.isAnnotationPresent(Inject.class)) {
                         Inject injectionParameters = variable.getAnnotation(Inject.class);
                         Object obj = null;
@@ -144,10 +144,10 @@ public class BarbatusHttpServer {
                         variable.set(httpHandler, inputProcessor);
                     } else if (variable.isAnnotationPresent(OutputProcessor.class)) {
                         variable.set(httpHandler, outputProcessor);
-                    } else if(variable.isAnnotationPresent(Inject.class)) {
-                        if(variable.getName().equals("secure")) {
+                    } else if (variable.isAnnotationPresent(Inject.class)) {
+                        if (variable.getName().equals("secure")) {
                             variable.set(httpHandler, parameters.secure());
-                        } else if(variable.getName().equals("method")) {
+                        } else if (variable.getName().equals("method")) {
                             variable.set(httpHandler, parameters.method());
                         }
                     }
@@ -166,7 +166,7 @@ public class BarbatusHttpServer {
     }
 
     public BarbatusHttpServer inject(Object object) throws BarbatusException {
-        if(this.handlers != null)
+        if (this.handlers != null)
             throw new BarbatusException("Can not inject dependencies after configuring handlers");
 
         for (Object instance : dependencies.values())
